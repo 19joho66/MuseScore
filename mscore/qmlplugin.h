@@ -120,6 +120,7 @@ class QmlPlugin : public QQuickItem {
       Q_INVOKABLE void cmd(const QString&);
       Q_INVOKABLE Ms::MsProcess* newQProcess();
       Q_INVOKABLE bool writeScore(Ms::Score*, const QString& name, const QString& ext);
+      Q_INVOKABLE bool exportScore(Ms::Score* s, const QString& name, const QString& ext, bool cleanDirty);
       Q_INVOKABLE Ms::Score* readScore(const QString& name, bool noninteractive = false);
       Q_INVOKABLE void closeScore(Ms::Score*);
 

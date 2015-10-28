@@ -487,7 +487,6 @@ class MuseScore : public QMainWindow, public MuseScoreCore {
       void selectionChanged(SelState);
       void createNewWorkspace();
       void changeWorkspace(Workspace* p);
-      void mixerPreferencesChanged(bool showMidiControls);
 
    public:
       MuseScore();
@@ -600,6 +599,7 @@ class MuseScore : public QMainWindow, public MuseScoreCore {
       void exportFile();
       bool exportParts();
       virtual bool saveAs(Score*, bool saveCopy, const QString& path, const QString& ext);
+      virtual bool exportAs(Score* cs, bool saveCopy, const QString& path, const QString& ext, bool cleanDirty);
       bool savePdf(const QString& saveName);
       bool savePdf(Score* cs, const QString& saveName);
       bool savePdf(QList<Score*> cs, const QString& saveName);

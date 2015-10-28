@@ -1749,6 +1749,25 @@ bool MuseScore::exportParts()
       }
 
 //---------------------------------------------------------
+//   exportAs
+//---------------------------------------------------------
+bool MuseScore::exportAs(Score* cs, bool saveCopy, const QString& path, const QString& ext, bool cleanDirty)
+{
+    bool retVal(true);
+    retVal=saveAs(cs, saveCopy,path, ext);
+    if (ext != "mscx" && ext != "mscz")
+    {
+        if(cleanDirty)
+        {
+            cs->undo()->setClean();
+            dirtyChanged(cs);
+            cs->setSaved(true);
+        }
+    }
+    return retVal;
+}
+
+//---------------------------------------------------------
 //   saveAs
 //---------------------------------------------------------
 

@@ -3118,7 +3118,27 @@ void MuseScore::handleMessage(const QString& message)
             return;
       if (startcenter)
             showStartcenter(false);
+
+      QString filePath = QDir::fromNativeSeparators(message);
+
+
       ((QtSingleApplication*)(qApp))->activateWindow();
+
+      //Score* score = readScore(message);
+
+      int index = scoreList.size();
+      for (int i = 0; i < scoreList.size(); ++i) {
+            if ( message!="" && QDir::fromNativeSeparators(scoreList[i]->importedFilePath()) == filePath)
+            {
+                  removeTab(i);
+                  //repaint();
+                  update();
+                  index = i;
+                  break;
+            }
+       }
+
+
       Score* score = readScore(message);
       if (score) {
             setCurrentScoreView(appendScore(score));
@@ -4396,16 +4416,6 @@ void MuseScore::instrumentChanged()
       {
       if (mixer)
             mixer->updateAll(cs);
-      }
-
-//---------------------------------------------------------
-//   mixerPreferencesChanged
-//---------------------------------------------------------
-
-void MuseScore::mixerPreferencesChanged(bool showMidiControls)
-      {
-      if (mixer)
-            mixer->midiPrefsChanged(showMidiControls);
       }
 
 //---------------------------------------------------------

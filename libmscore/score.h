@@ -280,6 +280,8 @@ class Score : public QObject, public ScoreElement {
       Q_PROPERTY(QString                        poet              READ poet)
       Q_PROPERTY(QString                        subtitle          READ subtitle)
       Q_PROPERTY(QString                        title             READ title)
+      Q_PROPERTY(QString                path              READ absoluteFilePath)
+      Q_PROPERTY(QString                importpath        READ importedFilePath)
 
    public:
       enum class FileError : char {
@@ -335,10 +337,6 @@ class Score : public QObject, public ScoreElement {
 
       QQueue<MidiInputEvent> midiInputQueue;
       QList<MidiMapping> _midiMapping;
-      bool isSimpleMidiMaping; // midi mapping is simple if all ports and channels
-                               // don't decrease and don't have gaps
-      QSet<int> occupiedMidiChannels;     // each entry is port*16+channel, port range: 0-inf, channel: 0-15
-      unsigned int searchMidiMappingFrom; // makes getting next free MIDI mapping faster
 
       RepeatList* _repeatList;
       TimeSigMap* _sigmap;
@@ -490,10 +488,6 @@ class Score : public QObject, public ScoreElement {
       FileError loadCompressedMsc(QIODevice*, bool ignoreVersionError);
       FileError read114(XmlReader&);
       FileError read1(XmlReader&, bool ignoreVersionError);
-
-      void reorderMidiMapping();
-      void removeDeletedMidiMapping();
-      int updateMidiMapping();
 
    protected:
       void createPlayEvents(Chord*);
@@ -727,6 +721,7 @@ class Score : public QObject, public ScoreElement {
       QFileInfo* fileInfo()          { return &info; }
       QString name() const           { return info.completeBaseName(); }
       void setName(QString s);
+      QString absoluteFilePath() const          { return info.absoluteFilePath(); }
 
       QString importedFilePath() const           { return _importedFilePath; }
       void setImportedFilePath(const QString& filePath);
@@ -809,10 +804,6 @@ class Score : public QObject, public ScoreElement {
       QList<MidiMapping>* midiMapping()       { return &_midiMapping;          }
       MidiMapping* midiMapping(int channel)   { return &_midiMapping[channel]; }
       void rebuildMidiMapping();
-      void checkMidiMapping();
-      bool exportMidiMapping() { return !isSimpleMidiMaping; }
-      int getNextFreeMidiMapping(int p = -1, int ch = -1);
-      int getNextFreeDrumMidiMapping();
       void updateChannel();
       void updateSwing();
       void createPlayEvents();

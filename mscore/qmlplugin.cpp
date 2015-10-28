@@ -67,6 +67,17 @@ bool QmlPlugin::writeScore(Score* s, const QString& name, const QString& ext)
       }
 
 //---------------------------------------------------------
+//   ExportScore
+//---------------------------------------------------------
+
+bool QmlPlugin::exportScore(Score* s, const QString& name, const QString& ext, bool cleanDirty)
+      {
+      if(!s)
+            return false;
+      return msc->exportAs(s, true, name, ext, cleanDirty);
+      }
+
+//---------------------------------------------------------
 //   readScore
 //
 // noninteractive can be used to avoid a 'save changes'
