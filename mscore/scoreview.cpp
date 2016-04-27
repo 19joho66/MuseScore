@@ -69,6 +69,7 @@
 #include "libmscore/score.h"
 #include "libmscore/segment.h"
 #include "libmscore/shadownote.h"
+#include "libmscore/shadownotesymbol.h"
 #include "libmscore/slur.h"
 #include "libmscore/spanner.h"
 #include "libmscore/staff.h"
@@ -1068,6 +1069,7 @@ void ScoreView::setScore(Score* s)
 
             connect(s, SIGNAL(posChanged(POS,unsigned)), SLOT(posChanged(POS,unsigned)));
             connect(this, SIGNAL(viewRectChanged()), this, SLOT(updateContinuousPanel()));
+            connect(s, SIGNAL(updateShadow()),this,SLOT(updateShadowNotes()));
             }
       }
 
@@ -1738,20 +1740,26 @@ void ScoreView::setShadowNote(const QPointF& p)
                   noteheadGroup = ds->noteHead(pitch);
                   }
             }
+
       shadowNote->setLine(line);
-      SymId s;
+      SymId symNotehead;
+      TDuration d(is.duration());
+
       if (is.rest()) {
             int yo;
-            TDuration d(is.duration());
             Rest rest(gscore, d.type());
             rest.setDuration(d.fraction());
-            s = rest.getSymbol(is.duration().type(), 0, staff->lines(), &yo);
+            symNotehead = rest.getSymbol(is.duration().type(), 0, staff->lines(), &yo);
+            shadowNote->setSym(symNotehead);
             }
-      else
-            s = Note::noteHead(0, noteheadGroup, noteHead);
-      shadowNote->setSym(s);
+      else {
+            symNotehead = Note::noteHead(0, noteheadGroup, noteHead);
+            shadowNote->setSymbols(d.type(),symNotehead);
+            }
+
       shadowNote->layout();
       shadowNote->setPos(pos.pos);
+
       }
 
 //---------------------------------------------------------
@@ -3631,7 +3639,15 @@ void ScoreView::noteEntryButton(QMouseEvent* ev)
             ChordRest* cr = _score->inputState().cr();
             if (cr)
                   adjustCanvasPosition(cr, false);
-            }
+
+           // get the position of the cursor rect for the next noteentry
+           QRect rect=_matrix.mapRect(_cursor->rect()).toRect();
+           QPoint position(rect.x()+rect.width()/2,rect.y()+rect.height()/2);
+           // recalculate to global coordinates
+           QPoint Global=this->mapToGlobal(position);
+           // set the mousecuror to new position
+           QCursor::setPos(Global);
+           }
       }
 
 //---------------------------------------------------------
@@ -4203,6 +4219,12 @@ void ScoreView::adjustCanvasPosition(const Element* el, bool playBack)
                   showRect.setY(r.y());
                   showRect.setHeight(r.height());
                   }
+            }
+      if (mscore->state() == ScoreState::STATE_NOTE_ENTRY
+                || mscore->state() == ScoreState::STATE_NOTE_ENTRY_DRUM
+                || mscore->state() == ScoreState::STATE_NOTE_ENTRY_PITCHED
+                || mscore->state() == ScoreState::STATE_NOTE_ENTRY_TAB) {
+            setShadowNote(p);
             }
 
       if (r.contains(showRect))
@@ -6181,6 +6203,15 @@ void ScoreView::updateContinuousPanel()
       if (_score->layoutMode() == LayoutMode::LINE)
             update();
       }
+
+
+void ScoreView::updateShadowNotes()
+      {
+
+       setShadowNote(shadowNote->pos());
+
+      }
+
 
 }
 
