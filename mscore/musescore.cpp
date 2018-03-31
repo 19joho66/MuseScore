@@ -1310,6 +1310,16 @@ void MuseScore::updateInspector()
       }
 
 //---------------------------------------------------------
+//   updateShadowNote
+//   update the shadow note in the current ScoreView
+//---------------------------------------------------------
+
+void MuseScore::updateShadowNote()
+      {
+      currentScoreView()->updateShadowNotes();
+      }
+
+//---------------------------------------------------------
 //   appendScore
 //    append score to project list
 //---------------------------------------------------------
@@ -3208,8 +3218,8 @@ void MuseScore::about()
 AboutBoxDialog::AboutBoxDialog()
       {
       setupUi(this);
-      museLogo->setPixmap(QPixmap(preferences.globalStyle == MuseScoreStyleType::DARK ?
-            ":/data/musescore-logo-transbg-m.png" : ":/data/musescore_logo_full.png"));
+//      museLogo->setPixmap(QPixmap(preferences.globalStyle == MuseScoreStyleType::DARK ?
+//            ":/data/musescore-logo-transbg-m.png" : ":/data/musescore_logo_full.png"));
 
       if (MuseScore::unstable())
             versionLabel->setText(tr("Unstable Prerelease for Version: %1").arg(VERSION));

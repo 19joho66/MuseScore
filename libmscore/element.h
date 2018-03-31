@@ -407,6 +407,8 @@ class Element : public QObject, public ScoreElement {
       bool isSLine() const;
       bool isSLineSegment() const;
 
+      bool isNote() const      { return type() == Element::Type::NOTE || type() == Element::Type::NOTEHEAD ; }
+
       virtual void draw(QPainter*) const {}
 
       virtual void writeProperties(Xml& xml) const;

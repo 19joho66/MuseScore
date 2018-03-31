@@ -201,6 +201,7 @@ class ScoreView : public QWidget, public MuseScoreView {
 
       void objectPopup(const QPoint&, Element*);
       void measurePopup(const QPoint&, Measure*);
+      void noteEntryPopup(const QPoint&);
 
       void saveChord(Xml&);
 
@@ -406,6 +407,7 @@ class ScoreView : public QWidget, public MuseScoreView {
       void pagePrev();
       void pageTop();
       void pageEnd();
+
       QPointF toLogical(const QPoint& p) const { return imatrix.map(QPointF(p)); }
       QPointF toPhysical(const QPointF& p) const {return _matrix.map(p); }
       QRectF toLogical(const QRectF& r) const  { return imatrix.mapRect(r); }
@@ -456,6 +458,7 @@ class ScoreView : public QWidget, public MuseScoreView {
       virtual QCursor cursor() const { return QWidget::cursor(); }
       void loopUpdate(bool val)   {  loopToggled(val); }
 
+	  void updateShadowNotes();
       OmrView* omrView() const    { return _omrView; }
       void setOmrView(OmrView* v) { _omrView = v;    }
       Lasso* fotoLasso() const    { return _foto;    }
@@ -465,6 +468,8 @@ class ScoreView : public QWidget, public MuseScoreView {
       void editFretDiagram(FretDiagram*);
       void editBendProperties(Bend*);
       void editTremoloBarProperties(TremoloBar*);
+      QToolBar* entryContxtToolbar;
+      QMenu*    entryContxtMenu;
       };
 
 //---------------------------------------------------------

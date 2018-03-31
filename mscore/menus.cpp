@@ -415,7 +415,7 @@ Palette* MuseScore::newBreaksPalette()
 
       LayoutBreak* lb = new LayoutBreak(gscore);
       lb->setLayoutBreakType(LayoutBreak::Type::LINE);
-      PaletteCell* cell = sp->append(lb, tr("System break"));
+      PaletteCell* cell = sp->append(lb, tr("Line break"));
       cell->mag = 1.2;
 
       lb = new LayoutBreak(gscore);
@@ -1333,6 +1333,9 @@ QMenu* MuseScore::genCreateMenu(QWidget* parent)
       lines->addAction(getAction("add-8va"));
       lines->addAction(getAction("add-8vb"));
       lines->addAction(getAction("add-noteline"));
+
+      popup->addAction(getAction("note-input"));
+
       return popup;
       }
 
